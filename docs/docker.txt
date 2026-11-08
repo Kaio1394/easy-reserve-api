@@ -1,0 +1,1 @@
+docker run -d --name easy-reserve-db -e POSTGRES_DB=easy_reserve_db -e POSTGRES_USER=adm -e POSTGRES_PASSWORD=Teste1234 -p 5450:5432 postgres:16

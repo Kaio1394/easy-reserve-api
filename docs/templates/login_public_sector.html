@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyReserve - Modelos Institucionais (Login Direto & Cadastro de Workspace + Owner)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+  </style>
+</head>
+<body class="bg-[#f0f2f5] text-[#1b2026] antialiased min-h-screen font-sans">
+
+  <!-- ========================================== -->
+  <!-- BARRA DE SELEÇÃO DOS TEMPLATES NO TOPO -->
+  <!-- ========================================== -->
+  <aside class="bg-[#0b1b33] text-white border-b border-[#051122] px-4 py-2.5 shadow-sm sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-sm bg-[#1351b4]"></span>
+        <span class="font-semibold tracking-wide uppercase">EasyReserve // Setor Público (Fluxo: Login Direto + Criar Workspace &amp; Owner)</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-[#071324] p-1 rounded border border-[#1e3456]">
+        <button onclick="switchTemplate('tab-govbr')" id="btn-govbr" class="tab-btn px-3 py-1 rounded text-xs font-medium transition bg-[#1351b4] text-white shadow">
+          1. Padrão Gov.br
+        </button>
+        <button onclick="switchTemplate('tab-universidade')" id="btn-universidade" class="tab-btn px-3 py-1 rounded text-xs font-medium transition text-[#a0b3cc] hover:text-white">
+          2. Portal Acadêmico (SUAP / UTFPR)
+        </button>
+        <button onclick="switchTemplate('tab-patrimonio')" id="btn-patrimonio" class="tab-btn px-3 py-1 rounded text-xs font-medium transition text-[#a0b3cc] hover:text-white">
+          3. SEI / Gestão de Espaços
+        </button>
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ======================================================== -->
+  <!-- TEMPLATE 1: PADRÃO GOV.BR -->
+  <!-- ======================================================== -->
+  <section id="tab-govbr" class="tab-content active">
+    
+    <!-- Barra Superior Brasil -->
+    <div class="bg-[#0c326f] text-[#cfdff6] text-[12px] py-1 px-4 border-b border-[#082451]">
+      <div class="max-w-5xl mx-auto flex items-center justify-between font-medium">
+        <div class="flex items-center gap-4">
+          <span class="text-white font-bold tracking-tight">BRASIL</span>
+          <span class="hidden sm:inline text-[#8aa9d6]">|</span>
+          <span class="hidden sm:inline">Ministério da Educação / Setor Público</span>
+        </div>
+        <div class="flex items-center gap-4 text-[12px]">
+          <a href="#" class="hover:underline">Acessibilidade</a>
+          <a href="#" class="hover:underline">Alto Contraste</a>
+          <a href="#" class="hover:underline">VLibras</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de Identificação do Sistema -->
+    <header class="bg-white border-b border-[#dcdfe3] py-4 px-4">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-[#0c326f] text-white font-bold flex items-center justify-center rounded text-sm tracking-wider">
+            ER
+          </div>
+          <div>
+            <h1 class="text-base font-bold text-[#0c326f] leading-tight">EasyReserve</h1>
+            <p class="text-xs text-[#555]">Sistema Integrado de Gestão de Ambientes e Controle de Chaves</p>
+          </div>
+        </div>
+        <span class="hidden md:inline-block px-2.5 py-1 rounded bg-[#e7effa] text-[#0c326f] border border-[#b8d1f3] text-xs font-semibold">
+          Ambiente Oficial
+        </span>
+      </div>
+    </header>
+
+    <!-- Corpo Central Gov.br -->
+    <main class="max-w-5xl mx-auto px-4 py-10 flex justify-center">
+      <div class="w-full max-w-xl bg-white border border-[#dcdfe3] rounded-lg shadow-sm overflow-hidden">
+        
+        <!-- Abas Alternadoras: Entrar vs Cadastrar Workspace -->
+        <div class="flex border-b border-[#dcdfe3] bg-[#f8f9fa]">
+          <button onclick="toggleGovMode('login')" id="gov-tab-login" class="flex-1 py-3 text-xs font-bold text-[#0c326f] border-b-2 border-[#0c326f] bg-white transition">
+            1. Acessar Conta
+          </button>
+          <button onclick="toggleGovMode('register')" id="gov-tab-register" class="flex-1 py-3 text-xs font-medium text-[#666] hover:text-[#0c326f] transition">
+            2. Cadastrar Novo Workspace &amp; Gestor (Owner)
+          </button>
+        </div>
+
+        <div class="p-8">
+          
+          <!-- SUB-PAINEL 1: LOGIN DIRETO (SEM CAMPO CÂMPUS) -->
+          <div id="gov-panel-login" class="form-panel active space-y-6">
+            <div>
+              <h2 class="text-xl font-bold text-[#1b2026]">Identifique-se no EasyReserve</h2>
+              <p class="text-xs text-[#555] mt-1">Acesse com suas credenciais. Seu Workspace será identificado automaticamente.</p>
+            </div>
+
+            <!-- Botão Oficial Gov.br -->
+            <div>
+              <button type="button" onclick="alert('Redirecionando para autenticação unificada Gov.br (OAuth2 / OIDC)...')" 
+                      class="w-full py-2.5 px-4 bg-[#1351b4] hover:bg-[#0c326f] text-white font-semibold rounded text-sm transition flex items-center justify-center gap-3 shadow-xs">
+                <span class="font-bold text-xs tracking-wider bg-white text-[#1351b4] px-1.5 py-0.5 rounded">gov.br</span>
+                <span>Entrar com gov.br</span>
+              </button>
+              <p class="text-[12px] text-center text-[#666] mt-2">Recomendado para servidores, professores e alunos da rede federal</p>
+            </div>
+
+            <div class="relative flex items-center justify-center">
+              <div class="border-t border-[#dcdfe3] w-full"></div>
+              <span class="bg-white px-3 text-xs text-[#777] font-medium uppercase tracking-wider">ou acesse com usuário/CPF</span>
+            </div>
+
+            <!-- Formulário de Login Direto -->
+            <form class="space-y-4" onsubmit="event.preventDefault(); alert('Login efetuado! O backend localizou seu Workspace automaticamente.');">
+              <div>
+                <label class="block text-xs font-bold text-[#333] mb-1">CPF, E-mail ou Nome de Usuário (username)</label>
+                <input type="text" placeholder="ex: 000.000.000-00 ou usuario.login" required
+                       class="w-full bg-[#f9fafb] border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] placeholder-[#888] focus:outline-none focus:border-[#1351b4]">
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs font-bold text-[#333]">Senha</label>
+                  <a href="#" class="text-xs text-[#1351b4] hover:underline">Esqueci a senha</a>
+                </div>
+                <input type="password" placeholder="••••••••••••" required
+                       class="w-full bg-[#f9fafb] border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+              </div>
+
+              <button type="submit" class="w-full py-2.5 px-4 bg-[#0c326f] hover:bg-[#071f45] text-white font-bold rounded text-xs uppercase tracking-wider transition">
+                Acessar Sistema
+              </button>
+            </form>
+
+            <div class="text-center pt-2">
+              <span class="text-xs text-[#666]">Sua instituição ainda não possui conta? </span>
+              <button type="button" onclick="toggleGovMode('register')" class="text-xs font-bold text-[#1351b4] hover:underline">
+                Cadastrar novo Workspace
+              </button>
+            </div>
+          </div>
+
+
+          <!-- SUB-PAINEL 2: CADASTRO DE WORKSPACE + USUÁRIO OWNER -->
+          <div id="gov-panel-register" class="form-panel space-y-6">
+            <div>
+              <h2 class="text-xl font-bold text-[#1b2026]">Cadastrar Workspace &amp; Gestor</h2>
+              <p class="text-xs text-[#555] mt-1">Crie a unidade institucional e a conta inicial com perfil <strong>OWNER</strong> para administrá-la.</p>
+            </div>
+
+            <form class="space-y-5" onsubmit="event.preventDefault(); alert('Workspace e Usuário OWNER cadastrados com sucesso!');">
+              
+              <!-- BLOCO 1: DADOS DO WORKSPACE (tb_workspaces) -->
+              <div class="bg-[#f8f9fa] border border-[#dcdfe3] rounded-md p-4 space-y-3">
+                <div class="flex items-center gap-2 border-b border-[#e5e7eb] pb-2">
+                  <span class="w-5 h-5 rounded-full bg-[#0c326f] text-white text-[12px] font-bold flex items-center justify-center">1</span>
+                  <h3 class="text-xs font-bold text-[#0c326f] uppercase tracking-wide">Dados da Instituição (Workspace)</h3>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-[#333] mb-1">Nome da Instituição / Câmpus <span class="text-red-600">*</span></label>
+                  <input type="text" placeholder="ex: UTFPR — Câmpus Curitiba" required
+                         class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-[#333] mb-1">Identificador Slug (URL amigável e único) <span class="text-red-600">*</span></label>
+                  <div class="relative">
+                    <input type="text" placeholder="ex: utfpr-curitiba" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] font-mono focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                  <span class="text-[12px] text-[#777]">Utilizado para identificação única do Workspace no banco de dados.</span>
+                </div>
+              </div>
+
+              <!-- BLOCO 2: DADOS DO USUÁRIO GESTOR (tb_users -> Role.OWNER) -->
+              <div class="bg-[#f8f9fa] border border-[#dcdfe3] rounded-md p-4 space-y-3">
+                <div class="flex items-center justify-between border-b border-[#e5e7eb] pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-[#0c326f] text-white text-[12px] font-bold flex items-center justify-center">2</span>
+                    <h3 class="text-xs font-bold text-[#0c326f] uppercase tracking-wide">Dados do Gestor Titular (Usuário OWNER)</h3>
+                  </div>
+                  <span class="text-[12px] bg-[#0c326f]/10 text-[#0c326f] px-2 py-0.5 rounded font-mono font-bold">ROLE: OWNER</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">Nome de Usuário (username) <span class="text-red-600">*</span></label>
+                    <input type="text" placeholder="ex: gestor.campus" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">CPF do Gestor <span class="text-red-600">*</span></label>
+                    <input type="text" placeholder="000.000.000-00" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">E-mail Institucional <span class="text-red-600">*</span></label>
+                    <input type="email" placeholder="gestor@utfpr.edu.br" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">Telefone / Ramal</label>
+                    <input type="tel" placeholder="(41) 3310-0000"
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">Senha (mínimo 6) <span class="text-red-600">*</span></label>
+                    <input type="password" placeholder="••••••••••••" minlength="6" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-[#333] mb-1">Confirmar Senha <span class="text-red-600">*</span></label>
+                    <input type="password" placeholder="••••••••••••" minlength="6" required
+                           class="w-full bg-white border border-[#b0b8c2] rounded px-3 py-2 text-xs text-[#222] focus:outline-none focus:border-[#1351b4]">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Termo de Responsabilidade -->
+              <div class="pt-1">
+                <label class="flex items-start gap-2 cursor-pointer text-xs text-[#555]">
+                  <input type="checkbox" required class="mt-0.5 text-[#0c326f] rounded focus:ring-0">
+                  <span>Declaro ser responsável legal pelo cadastramento desta instituição e pela gestão de ambientes e chaves associadas a este Workspace.</span>
+                </label>
+              </div>
+
+              <div class="pt-2 flex items-center gap-3">
+                <button type="submit" class="flex-1 py-2.5 px-4 bg-[#1351b4] hover:bg-[#0c326f] text-white font-bold rounded text-xs uppercase tracking-wider transition shadow-xs">
+                  Criar Workspace &amp; Conta de Gestor
+                </button>
+                <button type="button" onclick="toggleGovMode('login')" class="px-4 py-2.5 border border-[#ccc] rounded text-xs font-semibold text-[#555] hover:bg-[#f0f2f5]">
+                  Cancelar
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+
+        <div class="px-8 pb-6 text-[12px] text-[#666] leading-relaxed border-t border-[#f0f2f5] pt-4">
+          <p>
+            <strong>Aviso de Auditoria:</strong> A criação de Workspace institui um ambiente isolado (multi-tenant) no banco de dados. Todas as movimentações de chaves e reservas serão vinculadas a esta unidade.
+          </p>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="bg-white border-t border-[#dcdfe3] py-4 text-center text-xs text-[#666]">
+      <p>EasyReserve API • Padrão Digital de Governo • UTFPR / MEC • 2026</p>
+    </footer>
+  </section>
+
+
+  <!-- ======================================================== -->
+  <!-- TEMPLATE 2: PORTAL ACADÊMICO UNIVERSITÁRIO (SUAP / UTFPR) -->
+  <!-- ======================================================== -->
+  <section id="tab-universidade" class="tab-content">
+    
+    <header class="bg-[#1b4332] text-white py-3.5 px-6 shadow-sm border-b-4 border-[#2d6a4f]">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-11 h-11 bg-white text-[#1b4332] rounded flex items-center justify-center font-bold text-lg shadow-xs">
+            🏛️
+          </div>
+          <div>
+            <h1 class="text-base font-bold tracking-tight">UNIVERSIDADE TECNOLÓGICA FEDERAL DO PARANÁ</h1>
+            <p class="text-xs text-[#b7e4c7]">Portal de Reservas e Controle Patrimonial de Ambientes e Chaves</p>
+          </div>
+        </div>
+        <div class="hidden md:block text-right text-xs text-[#d8f3dc]">
+          <p class="font-semibold">Central de Atendimento ao Servidor</p>
+          <p class="text-[12px]">DTI / Gestão de Espaços</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <div class="grid md:grid-cols-12 gap-8 items-start">
+        
+        <!-- Coluna Esquerda: Informações (5 colunas) -->
+        <div class="md:col-span-5 space-y-5">
+          <div class="bg-white border border-[#d8e2dc] rounded-md p-6 shadow-xs">
+            <div class="flex items-center gap-2 border-b border-[#e9ecef] pb-3 mb-4">
+              <span class="text-base">📋</span>
+              <h2 class="text-sm font-bold text-[#1b4332] uppercase tracking-wide">Diretrizes do Sistema</h2>
+            </div>
+
+            <div class="space-y-4 text-xs text-[#495057] leading-relaxed">
+              <p>
+                O <strong>EasyReserve</strong> gerencia a liberação física e eletrônica de chaves de salas de aula, laboratórios e auditórios.
+              </p>
+              
+              <div class="p-3 bg-[#e8f5e9] border-l-4 border-[#1b4332] rounded-r text-[#1b4332]">
+                <strong class="block mb-1">Como funciona o acesso:</strong>
+                O login é individual por CPF/Matrícula. O sistema identifica seu Câmpus/Workspace automaticamente. Para registrar um novo câmpus ou departamento autônomo, utilize a aba de cadastro.
+              </div>
+
+              <ul class="list-disc pl-4 space-y-1.5 text-[#555]">
+                <li>Gestão isolada de chaves e ambientes por Workspace.</li>
+                <li>O criador do Workspace assume o papel de <code>OWNER</code>.</li>
+                <li>Rastreabilidade de retiradas com data/hora em tempo real.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-[#1b4332] text-white p-4 rounded-md text-xs space-y-1.5">
+            <div class="flex items-center justify-between font-bold">
+              <span>POSTO CENTRAL DE CHAVES</span>
+              <span class="text-[#b7e4c7]">PORTARIA ABERTA</span>
+            </div>
+            <p class="text-[12px] text-[#d8f3dc]">Atendimento das 07h00 às 22h30 • Ramal 3100</p>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Formulários (7 colunas) -->
+        <div class="md:col-span-7">
+          <div class="bg-white border-2 border-[#1b4332] rounded-md shadow-md overflow-hidden">
+            
+            <div class="flex bg-[#f1f3f5] border-b-2 border-[#1b4332]">
+              <button onclick="toggleSuapMode('login')" id="suap-tab-login" class="flex-1 py-3 text-xs font-bold text-[#1b4332] bg-white border-r border-[#e9ecef] transition">
+                Acesso ao Sistema (Login)
+              </button>
+              <button onclick="toggleSuapMode('register')" id="suap-tab-register" class="flex-1 py-3 text-xs font-medium text-[#6c757d] hover:text-[#1b4332] transition">
+                Cadastrar Câmpus / Workspace (Novo)
+              </button>
+            </div>
+
+            <div class="p-6">
+
+              <!-- LOGIN SUAP/UTFPR (SEM CAMPO CÂMPUS) -->
+              <div id="suap-panel-login" class="form-panel active space-y-4">
+                <div class="border-b border-[#e9ecef] pb-3">
+                  <h3 class="text-base font-bold text-[#1b4332]">Identificação Funcional</h3>
+                  <p class="text-xs text-[#6c757d]">Informe seu identificador. Seu workspace será carregado automaticamente.</p>
+                </div>
+
+                <form class="space-y-4" onsubmit="event.preventDefault(); alert('Login validado!');">
+                  <div>
+                    <label class="block text-xs font-semibold text-[#212529] mb-1">CPF, SIAPE ou Matrícula (username)</label>
+                    <input type="text" placeholder="ex: a1234567 ou prof.silva" required
+                           class="w-full bg-[#f8f9fa] border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                  </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-1">
+                      <label class="text-xs font-semibold text-[#212529]">Senha Institucional</label>
+                      <a href="#" class="text-xs text-[#1b4332] hover:underline font-medium">Recuperar senha</a>
+                    </div>
+                    <input type="password" placeholder="••••••••••••" required
+                           class="w-full bg-[#f8f9fa] border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                  </div>
+
+                  <button type="submit" class="w-full py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-bold rounded text-xs uppercase tracking-wider transition">
+                    Entrar no Portal de Reservas
+                  </button>
+                </form>
+              </div>
+
+              <!-- REGISTRO SUAP/UTFPR: CRIAÇÃO DE WORKSPACE + GESTOR OWNER -->
+              <div id="suap-panel-register" class="form-panel space-y-4">
+                <div class="border-b border-[#e9ecef] pb-3">
+                  <h3 class="text-base font-bold text-[#1b4332]">Credenciamento de Câmpus / Workspace</h3>
+                  <p class="text-xs text-[#6c757d]">Criação simultânea da entidade <code>WorkspaceEntity</code> e do usuário <code>OWNER</code>.</p>
+                </div>
+
+                <form class="space-y-4" onsubmit="event.preventDefault(); alert('Workspace e Gestor registrados com sucesso!');">
+                  
+                  <!-- Bloco Workspace -->
+                  <div class="p-3.5 bg-[#f8f9fa] border border-[#ced4da] rounded space-y-2.5">
+                    <span class="text-xs font-bold text-[#1b4332] uppercase">1. Unidade Gestora (Workspace)</span>
+                    
+                    <div>
+                      <label class="block text-xs font-semibold text-[#212529] mb-1">Nome do Câmpus / Setor <span class="text-red-600">*</span></label>
+                      <input type="text" placeholder="ex: Câmpus Pato Branco — Bloco Central" required
+                             class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                    </div>
+
+                    <div>
+                      <label class="block text-xs font-semibold text-[#212529] mb-1">Identificador Slug <span class="text-red-600">*</span></label>
+                      <input type="text" placeholder="ex: utfpr-pb-central" required
+                             class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529] font-mono">
+                    </div>
+                  </div>
+
+                  <!-- Bloco Gestor Owner -->
+                  <div class="p-3.5 bg-[#f8f9fa] border border-[#ced4da] rounded space-y-2.5">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-[#1b4332] uppercase">2. Gestor Titular do Câmpus</span>
+                      <span class="text-[12px] bg-[#1b4332] text-white px-2 py-0.5 rounded font-mono font-semibold">ROLE: OWNER</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">Nome de Usuário (username) <span class="text-red-600">*</span></label>
+                        <input type="text" placeholder="ex: prof.coordenador" required
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">CPF do Gestor <span class="text-red-600">*</span></label>
+                        <input type="text" placeholder="000.000.000-00" required
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">E-mail Institucional <span class="text-red-600">*</span></label>
+                        <input type="email" placeholder="gestor@utfpr.edu.br" required
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">Telefone / Ramal</label>
+                        <input type="tel" placeholder="(46) 3220-2500"
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">Senha de Acesso <span class="text-red-600">*</span></label>
+                        <input type="password" placeholder="Mínimo 6 caracteres" minlength="6" required
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                      <div>
+                        <label class="block text-xs font-semibold text-[#212529] mb-1">Confirmação de Senha <span class="text-red-600">*</span></label>
+                        <input type="password" placeholder="Repita a senha" minlength="6" required
+                               class="w-full bg-white border border-[#ced4da] rounded p-2 text-xs text-[#212529]">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pt-2 flex items-center gap-3">
+                    <button type="submit" class="flex-1 py-2.5 bg-[#2d6a4f] hover:bg-[#1b4332] text-white font-bold rounded text-xs uppercase tracking-wider transition">
+                      Concluir Registro do Câmpus
+                    </button>
+                    <button type="button" onclick="toggleSuapMode('login')" class="px-4 py-2.5 border border-[#ced4da] rounded text-xs font-semibold text-[#495057]">
+                      Voltar ao Login
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </section>
+
+
+  <!-- ======================================================== -->
+  <!-- TEMPLATE 3: SEI / GESTÃO PATRIMONIAL (DENSO & SÓBRIO) -->
+  <!-- ======================================================== -->
+  <section id="tab-patrimonio" class="tab-content">
+    <div class="max-w-3xl mx-auto px-4 py-12">
+      
+      <div class="bg-white border border-[#b8c2cc] rounded shadow-xs overflow-hidden">
+        
+        <!-- Header SEI Clássico -->
+        <div class="bg-[#003366] text-white p-4 flex items-center justify-between border-b-2 border-[#002244]">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center font-bold text-sm">
+              SIGE
+            </div>
+            <div>
+              <h2 class="text-sm font-bold tracking-tight">SISTEMA INTEGRADO DE GESTÃO DE ESPAÇOS E AMBIENTES</h2>
+              <p class="text-[12px] text-[#b3c7dd]">Módulo Operacional de Agendamento de Ambientes e Controle de Chaves</p>
+            </div>
+          </div>
+          
+          <!-- Seletor Modo SEI -->
+          <div class="flex items-center bg-[#002244] p-1 rounded text-xs">
+            <button onclick="toggleSeiMode('login')" id="sei-tab-login" class="px-2.5 py-1 rounded bg-white text-[#003366] font-bold text-[12px]">
+              Login
+            </button>
+            <button onclick="toggleSeiMode('register')" id="sei-tab-register" class="px-2.5 py-1 rounded text-[#99badd] hover:text-white text-[12px]">
+              Cadastrar Unidade (Workspace)
+            </button>
+          </div>
+        </div>
+
+        <div class="p-8">
+          
+          <!-- MODO LOGIN SEI (DIRETO) -->
+          <div id="sei-panel-login" class="form-panel active">
+            <div class="mb-4 pb-2 border-b border-[#e2e8f0]">
+              <span class="text-xs font-bold text-[#003366] uppercase">Autenticação de Usuário Cadastrado</span>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault(); alert('Login confirmado no SIGEA!');">
+              
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Usuário / CPF:</label>
+                <div class="md:col-span-2">
+                  <input type="text" placeholder="Informe seu usuário funcional ou CPF" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#003366]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Senha de Acesso:</label>
+                <div class="md:col-span-2">
+                  <input type="password" placeholder="••••••••••••" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529] focus:outline-none focus:border-[#003366]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2 pt-2">
+                <div></div>
+                <div class="md:col-span-2 flex items-center gap-3">
+                  <button type="submit" 
+                          class="px-6 py-2 bg-[#003366] hover:bg-[#002244] text-white font-bold rounded text-xs uppercase tracking-wider transition">
+                    Confirmar Acesso
+                  </button>
+                  <a href="#" class="text-xs text-[#003366] hover:underline">Esqueci a Senha</a>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+
+          <!-- MODO CADASTRO SEI (WORKSPACE + OWNER) -->
+          <div id="sei-panel-register" class="form-panel">
+            <div class="mb-4 pb-2 border-b border-[#e2e8f0] flex items-center justify-between">
+              <span class="text-xs font-bold text-[#003366] uppercase">Abertura de Unidade Gestora (Workspace) e Gestor (OWNER)</span>
+              <span class="text-[12px] bg-[#003366] text-white px-2 py-0.5 rounded font-mono">ROLE: OWNER</span>
+            </div>
+
+            <form class="space-y-3" onsubmit="event.preventDefault(); alert('Unidade Gestora e Gestor OWNER criados com sucesso!');">
+              
+              <!-- Seção 1: Workspace -->
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Nome da Unidade (Workspace):</label>
+                <div class="md:col-span-2">
+                  <input type="text" placeholder="ex: UTFPR — Câmpus Curitiba" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Slug da Unidade:</label>
+                <div class="md:col-span-2">
+                  <input type="text" placeholder="ex: utfpr-ct" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529] font-mono">
+                </div>
+              </div>
+
+              <!-- Seção 2: Gestor Owner -->
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2 pt-2 border-t border-[#f0f2f5]">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Usuário do Gestor (username):</label>
+                <div class="md:col-span-2">
+                  <input type="text" placeholder="identificador.gestor" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">CPF do Gestor:</label>
+                <div class="md:col-span-2">
+                  <input type="text" placeholder="000.000.000-00" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">E-mail Institucional:</label>
+                <div class="md:col-span-2">
+                  <input type="email" placeholder="gestor@utfpr.edu.br" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Telefone / Ramal:</label>
+                <div class="md:col-span-2">
+                  <input type="tel" placeholder="(41) 3310-0000"
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                <label class="text-xs font-bold text-[#333] text-left md:text-right">Senha Inicial do Gestor:</label>
+                <div class="md:col-span-2">
+                  <input type="password" placeholder="Mínimo de 6 caracteres" minlength="6" required
+                         class="w-full bg-white border border-[#ced4da] rounded px-3 py-1.5 text-xs text-[#212529]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-2 pt-3">
+                <div></div>
+                <div class="md:col-span-2 flex items-center gap-3">
+                  <button type="submit" 
+                          class="px-6 py-2 bg-[#003366] hover:bg-[#002244] text-white font-bold rounded text-xs uppercase tracking-wider transition">
+                    Criar Unidade &amp; Gestor
+                  </button>
+                  <button type="button" onclick="toggleSeiMode('login')" class="text-xs text-[#555] hover:underline">
+                    Voltar ao Login
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-[#e2e8f0] text-[12px] text-[#6c757d] flex items-center justify-between">
+            <span>Terminal: PORTARIA-CENTRAL-01</span>
+            <span class="font-mono">STATUS: OPERACIONAL</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-6 text-xs text-[#6c757d]">
+        Universidade Tecnológica Federal do Paraná • Pró-Reitoria de Infraestrutura e Gestão de Espaços (PROINFRA)
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Lógica de Alternância -->
+  <script>
+    function switchTemplate(templateId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#1351b4]', 'text-white', 'shadow');
+        btn.classList.add('text-[#a0b3cc]');
+      });
+
+      document.getElementById(templateId).classList.add('active');
+
+      if (templateId === 'tab-govbr') {
+        const b = document.getElementById('btn-govbr');
+        b.classList.add('bg-[#1351b4]', 'text-white', 'shadow');
+        b.classList.remove('text-[#a0b3cc]');
+      } else if (templateId === 'tab-universidade') {
+        const b = document.getElementById('btn-universidade');
+        b.classList.add('bg-[#1351b4]', 'text-white', 'shadow');
+        b.classList.remove('text-[#a0b3cc]');
+      } else if (templateId === 'tab-patrimonio') {
+        const b = document.getElementById('btn-patrimonio');
+        b.classList.add('bg-[#1351b4]', 'text-white', 'shadow');
+        b.classList.remove('text-[#a0b3cc]');
+      }
+    }
+
+    function toggleGovMode(mode) {
+      const pLogin = document.getElementById('gov-panel-login');
+      const pRegister = document.getElementById('gov-panel-register');
+      const tabLogin = document.getElementById('gov-tab-login');
+      const tabRegister = document.getElementById('gov-tab-register');
+
+      if (mode === 'register') {
+        pLogin.classList.remove('active');
+        pRegister.classList.add('active');
+        tabLogin.classList.remove('border-b-2', 'border-[#0c326f]', 'text-[#0c326f]', 'bg-white', 'font-bold');
+        tabLogin.classList.add('text-[#666]');
+        tabRegister.classList.add('border-b-2', 'border-[#0c326f]', 'text-[#0c326f]', 'bg-white', 'font-bold');
+        tabRegister.classList.remove('text-[#666]');
+      } else {
+        pRegister.classList.remove('active');
+        pLogin.classList.add('active');
+        tabRegister.classList.remove('border-b-2', 'border-[#0c326f]', 'text-[#0c326f]', 'bg-white', 'font-bold');
+        tabRegister.classList.add('text-[#666]');
+        tabLogin.classList.add('border-b-2', 'border-[#0c326f]', 'text-[#0c326f]', 'bg-white', 'font-bold');
+        tabLogin.classList.remove('text-[#666]');
+      }
+    }
+
+    function toggleSuapMode(mode) {
+      const pLogin = document.getElementById('suap-panel-login');
+      const pRegister = document.getElementById('suap-panel-register');
+      const tabLogin = document.getElementById('suap-tab-login');
+      const tabRegister = document.getElementById('suap-tab-register');
+
+      if (mode === 'register') {
+        pLogin.classList.remove('active');
+        pRegister.classList.add('active');
+        tabLogin.classList.remove('bg-white', 'text-[#1b4332]', 'font-bold');
+        tabLogin.classList.add('text-[#6c757d]');
+        tabRegister.classList.add('bg-white', 'text-[#1b4332]', 'font-bold');
+        tabRegister.classList.remove('text-[#6c757d]');
+      } else {
+        pRegister.classList.remove('active');
+        pLogin.classList.add('active');
+        tabRegister.classList.remove('bg-white', 'text-[#1b4332]', 'font-bold');
+        tabRegister.classList.add('text-[#6c757d]');
+        tabLogin.classList.add('bg-white', 'text-[#1b4332]', 'font-bold');
+        tabLogin.classList.remove('text-[#6c757d]');
+      }
+    }
+
+    function toggleSeiMode(mode) {
+      const pLogin = document.getElementById('sei-panel-login');
+      const pRegister = document.getElementById('sei-panel-register');
+      const tabLogin = document.getElementById('sei-tab-login');
+      const tabRegister = document.getElementById('sei-tab-register');
+
+      if (mode === 'register') {
+        pLogin.classList.remove('active');
+        pRegister.classList.add('active');
+        tabLogin.classList.remove('bg-white', 'text-[#003366]', 'font-bold');
+        tabLogin.classList.add('text-[#99badd]');
+        tabRegister.classList.add('bg-white', 'text-[#003366]', 'font-bold');
+        tabRegister.classList.remove('text-[#99badd]');
+      } else {
+        pRegister.classList.remove('active');
+        pLogin.classList.add('active');
+        tabRegister.classList.remove('bg-white', 'text-[#003366]', 'font-bold');
+        tabRegister.classList.add('text-[#99badd]');
+        tabLogin.classList.add('bg-white', 'text-[#003366]', 'font-bold');
+        tabLogin.classList.remove('text-[#99badd]');
+      }
+    }
+  </script>
+
+</body>
+</html>

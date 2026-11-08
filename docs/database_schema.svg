@@ -1,0 +1,334 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 900" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg { fill: #0b0f19; }
+      .grid-dot { fill: #1e293b; }
+      .header-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #f8fafc; }
+      .header-desc { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .badge-bg { fill: #1e293b; stroke: #334155; stroke-width: 1; rx: 10; ry: 10; }
+      .badge-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #38bdf8; text-anchor: middle; }
+      
+      /* Card Styles */
+      .card-bg { fill: #151d30; stroke: #28354f; stroke-width: 1.5; rx: 8; ry: 8; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+      .card-header-bg { fill: #1e2a44; stroke: #28354f; stroke-width: 1; }
+      .table-name { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #ffffff; }
+      .table-count { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; fill: #64748b; font-weight: 600; text-anchor: end; }
+      
+      /* Column text */
+      .col-name { font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 12px; fill: #f1f5f9; }
+      .col-type { font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 11px; fill: #94a3b8; text-anchor: end; }
+      .col-req { fill: #ef4444; font-weight: bold; }
+      .row-divider { stroke: #192338; stroke-width: 1; }
+      
+      /* Badges */
+      .tag-pk-bg { fill: #fef08a; rx: 3; ry: 3; }
+      .tag-pk-text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 9px; font-weight: 800; fill: #854d0e; text-anchor: middle; }
+      .tag-fk-bg { fill: #bae6fd; rx: 3; ry: 3; }
+      .tag-fk-text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 9px; font-weight: 800; fill: #0369a1; text-anchor: middle; }
+      .tag-uq-bg { fill: #ddd6fe; rx: 3; ry: 3; }
+      .tag-uq-text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 9px; font-weight: 800; fill: #6d28d9; text-anchor: middle; }
+
+      /* Relationships */
+      .rel-line { fill: none; stroke: #38bdf8; stroke-width: 2; stroke-dasharray: 6,4; }
+      
+      /* Legend */
+      .leg-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12px; fill: #94a3b8; }
+    </style>
+
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" class="grid-dot" />
+    </pattern>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" class="bg" />
+  <rect x="25" y="80" width="1210" height="760" rx="12" ry="12" fill="url(#grid)" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- Page Header -->
+  <g transform="translate(35, 30)">
+    <text x="0" y="24" class="header-title">EasyReserve API &amp;mdash; Schema do Banco de Dados</text>
+    <rect x="495" y="6" width="155" height="24" class="badge-bg" />
+    <text x="572" y="22" class="badge-text">POSTGRESQL V1.0</text>
+    <text x="0" y="44" class="header-desc">Diagrama de Entidade-Relacionamento derivado das migrations Flyway</text>
+  </g>
+
+  <!-- RELATIONSHIP LINES -->
+  <g>
+    <!-- tb_workspaces -> tb_users -->
+    <path d="M 360 260 C 410 260, 410 145, 460 145" class="rel-line" marker-end="url(#arrow)" />
+    <!-- tb_workspaces -> tb_environments -->
+    <path d="M 360 350 C 410 350, 410 580, 460 580" class="rel-line" marker-end="url(#arrow)" />
+    <!-- tb_environments -> tb_keys -->
+    <path d="M 780 580 C 830 580, 830 580, 875 580" class="rel-line" marker-end="url(#arrow)" />
+  </g>
+
+  <!-- ==================== TABLE: tb_workspaces ==================== -->
+  <g transform="translate(60, 190)">
+    <rect width="300" height="245" class="card-bg" />
+    <path d="M 0 8 Q 0 0 8 0 L 292 0 Q 300 0 300 8 L 300 38 L 0 38 Z" class="card-header-bg" />
+    
+    <!-- Table Title -->
+    <g transform="translate(14, 24)">
+      <path d="M0 0h14v10H0V0zm-2 -2v14h18V-2H-2zm4 4h2v2H2V2zm0 4h2v2H2V6zm4 -4h6v2H6V2zm0 4h6v2H6V6z" fill="#38bdf8"/>
+      <text x="22" y="1" class="table-name">tb_workspaces</text>
+    </g>
+    <text x="286" y="24" class="table-count">6 colunas</text>
+
+    <!-- Rows -->
+    <!-- row 1: id -->
+    <g transform="translate(14, 62)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-pk-bg" />
+      <text x="9" y="0" class="tag-pk-text">PK</text>
+      <text x="24" y="0" class="col-name">id</text>
+      <text x="272" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="12" x2="286" y2="12" class="row-divider" />
+    </g>
+    <!-- row 2: name -->
+    <g transform="translate(14, 96)">
+      <text x="24" y="0" class="col-name">name</text>
+      <text x="272" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="12" x2="286" y2="12" class="row-divider" />
+    </g>
+    <!-- row 3: slug -->
+    <g transform="translate(14, 130)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-uq-bg" />
+      <text x="9" y="0" class="tag-uq-text">UQ</text>
+      <text x="24" y="0" class="col-name">slug</text>
+      <text x="272" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="12" x2="286" y2="12" class="row-divider" />
+    </g>
+    <!-- row 4: active -->
+    <g transform="translate(14, 164)">
+      <text x="24" y="0" class="col-name">active</text>
+      <text x="272" y="0" class="col-type">BOOLEAN <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="12" x2="286" y2="12" class="row-divider" />
+    </g>
+    <!-- row 5: created_at -->
+    <g transform="translate(14, 198)">
+      <text x="24" y="0" class="col-name">created_at</text>
+      <text x="272" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="12" x2="286" y2="12" class="row-divider" />
+    </g>
+    <!-- row 6: updated_at -->
+    <g transform="translate(14, 232)">
+      <text x="24" y="0" class="col-name">updated_at</text>
+      <text x="272" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+    </g>
+  </g>
+
+  <!-- ==================== TABLE: tb_users ==================== -->
+  <g transform="translate(460, 100)">
+    <rect width="320" height="375" class="card-bg" />
+    <path d="M 0 8 Q 0 0 8 0 L 312 0 Q 320 0 320 8 L 320 38 L 0 38 Z" class="card-header-bg" />
+    
+    <g transform="translate(14, 24)">
+      <path d="M6 6c1.66 0 3-1.34 3-3S7.66 0 6 0 3 1.34 3 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V13h14v-1.5c0-2.33-4.67-3.5-7-3.5z" fill="#38bdf8"/>
+      <text x="22" y="1" class="table-name">tb_users</text>
+    </g>
+    <text x="306" y="24" class="table-count">11 colunas</text>
+
+    <!-- Rows -->
+    <g transform="translate(14, 58)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-pk-bg" />
+      <text x="9" y="0" class="tag-pk-text">PK</text>
+      <text x="24" y="0" class="col-name">id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 88)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-fk-bg" />
+      <text x="9" y="0" class="tag-fk-text">FK</text>
+      <text x="24" y="0" class="col-name">workspace_id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 118)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-uq-bg" />
+      <text x="9" y="0" class="tag-uq-text">UQ</text>
+      <text x="24" y="0" class="col-name">username</text>
+      <text x="292" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 148)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-uq-bg" />
+      <text x="9" y="0" class="tag-uq-text">UQ</text>
+      <text x="24" y="0" class="col-name">email</text>
+      <text x="292" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 178)">
+      <text x="24" y="0" class="col-name">password</text>
+      <text x="292" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 208)">
+      <text x="24" y="0" class="col-name">phone</text>
+      <text x="292" y="0" class="col-type">VARCHAR(50)</text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 238)">
+      <text x="24" y="0" class="col-name">cpf</text>
+      <text x="292" y="0" class="col-type">VARCHAR(20)</text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 268)">
+      <text x="24" y="0" class="col-name">role</text>
+      <text x="292" y="0" class="col-type">VARCHAR(30) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 298)">
+      <text x="24" y="0" class="col-name">active</text>
+      <text x="292" y="0" class="col-type">BOOLEAN <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 328)">
+      <text x="24" y="0" class="col-name">created_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 358)">
+      <text x="24" y="0" class="col-name">updated_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+    </g>
+  </g>
+
+  <!-- ==================== TABLE: tb_environments ==================== -->
+  <g transform="translate(460, 510)">
+    <rect width="320" height="295" class="card-bg" />
+    <path d="M 0 8 Q 0 0 8 0 L 312 0 Q 320 0 320 8 L 320 38 L 0 38 Z" class="card-header-bg" />
+    
+    <g transform="translate(14, 24)">
+      <path d="M12 2H2v12h12V2zm-2 10H4V4h6v8zm4-6h2v10H6v-2h8V6z" fill="#38bdf8"/>
+      <text x="22" y="1" class="table-name">tb_environments</text>
+    </g>
+    <text x="306" y="24" class="table-count">8 colunas</text>
+
+    <!-- Rows -->
+    <g transform="translate(14, 58)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-pk-bg" />
+      <text x="9" y="0" class="tag-pk-text">PK</text>
+      <text x="24" y="0" class="col-name">id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 88)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-fk-bg" />
+      <text x="9" y="0" class="tag-fk-text">FK</text>
+      <text x="24" y="0" class="col-name">workspace_id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 118)">
+      <text x="24" y="0" class="col-name">name</text>
+      <text x="292" y="0" class="col-type">VARCHAR(255) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 148)">
+      <text x="24" y="0" class="col-name">description</text>
+      <text x="292" y="0" class="col-type">VARCHAR(500)</text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 178)">
+      <text x="24" y="0" class="col-name">capacity</text>
+      <text x="292" y="0" class="col-type">INTEGER</text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 208)">
+      <text x="24" y="0" class="col-name">active</text>
+      <text x="292" y="0" class="col-type">BOOLEAN <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 238)">
+      <text x="24" y="0" class="col-name">created_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 268)">
+      <text x="24" y="0" class="col-name">updated_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+    </g>
+  </g>
+
+  <!-- ==================== TABLE: tb_keys ==================== -->
+  <g transform="translate(875, 510)">
+    <rect width="320" height="265" class="card-bg" />
+    <path d="M 0 8 Q 0 0 8 0 L 312 0 Q 320 0 320 8 L 320 38 L 0 38 Z" class="card-header-bg" />
+    
+    <g transform="translate(14, 24)">
+      <path d="M5 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4-6c-2.21 0-4 1.79-4 4 0 .8.24 1.54.65 2.15L0 16v4h4v-2h2v-2h2l1.85-1.85C10.46 14.76 11.2 15 12 15c2.21 0 4-1.79 4-4s-1.79-4-4-4z" fill="#38bdf8"/>
+      <text x="22" y="1" class="table-name">tb_keys</text>
+    </g>
+    <text x="306" y="24" class="table-count">7 colunas</text>
+
+    <!-- Rows -->
+    <g transform="translate(14, 58)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-pk-bg" />
+      <text x="9" y="0" class="tag-pk-text">PK</text>
+      <text x="24" y="0" class="col-name">id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 88)">
+      <rect x="0" y="-10" width="18" height="13" class="tag-fk-bg" />
+      <text x="9" y="0" class="tag-fk-text">FK</text>
+      <text x="24" y="0" class="col-name">environment_id</text>
+      <text x="292" y="0" class="col-type">UUID <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 118)">
+      <text x="24" y="0" class="col-name">code</text>
+      <text x="292" y="0" class="col-type">VARCHAR(100) <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 148)">
+      <text x="24" y="0" class="col-name">available</text>
+      <text x="292" y="0" class="col-type">BOOLEAN <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 178)">
+      <text x="24" y="0" class="col-name">active</text>
+      <text x="292" y="0" class="col-type">BOOLEAN <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 208)">
+      <text x="24" y="0" class="col-name">created_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+      <line x1="-14" y1="10" x2="306" y2="10" class="row-divider" />
+    </g>
+    <g transform="translate(14, 238)">
+      <text x="24" y="0" class="col-name">updated_at</text>
+      <text x="292" y="0" class="col-type">TIMESTAMP <tspan class="col-req">*</tspan></text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(60, 860)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="-10" width="20" height="14" class="tag-pk-bg" />
+      <text x="10" y="1" class="tag-pk-text">PK</text>
+      <text x="26" y="2" class="leg-text">Primary Key</text>
+    </g>
+    <g transform="translate(140, 0)">
+      <rect x="0" y="-10" width="20" height="14" class="tag-fk-bg" />
+      <text x="10" y="1" class="tag-fk-text">FK</text>
+      <text x="26" y="2" class="leg-text">Foreign Key</text>
+    </g>
+    <g transform="translate(280, 0)">
+      <rect x="0" y="-10" width="20" height="14" class="tag-uq-bg" />
+      <text x="10" y="1" class="tag-uq-text">UQ</text>
+      <text x="26" y="2" class="leg-text">Unique Constraint</text>
+    </g>
+    <g transform="translate(440, 0)">
+      <text x="0" y="2" style="fill: #ef4444; font-weight: bold; font-size: 14px;">*</text>
+      <text x="12" y="2" class="leg-text">NOT NULL</text>
+    </g>
+    <g transform="translate(560, 0)">
+      <line x1="0" y1="0" x2="30" y2="0" class="rel-line" />
+      <text x="40" y="2" class="leg-text">Relacionamento 1 : N (Foreign Key)</text>
+    </g>
+  </g>
+</svg>
