@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,6 +15,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
@@ -23,8 +28,18 @@ jobs:
       - name: Conceder permissão de execução ao Maven Wrapper
         run: chmod +x mvnw
 
-      - name: Compilar e empacotar (.jar)
-        run: ./mvnw clean package -DskipTests
+      - name: Compilar e empacotar com metadados de versão
+        env:
+          APP_VERSION: "0.1.${{ github.run_number }}"
+          BUILD_NUMBER: "${{ github.run_number }}"
+          GIT_COMMIT: "${{ github.sha }}"
+          BUILD_TIME: "${{ github.event.head_commit.timestamp }}"
+        run: |
+          ./mvnw clean package -DskipTests \
+            -Dapp.version="0.1.${{ github.run_number }}" \
+            -Dapp.build-number="${{ github.run_number }}" \
+            -Dapp.git-commit="${{ github.sha }}" \
+            -Dapp.build-time="${{ github.event.head_commit.timestamp }}"
 
       - name: Configurar Chave SSH
         run: |
@@ -33,10 +48,35 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Enviar JAR para o Servidor Linux
+      - name: Enviar JAR e Versionar no Servidor Linux
         run: |
+          VERSION_TAG="v0.1.${{ github.run_number }}"
+          # Envia o JAR principal
           scp -i ~/.ssh/id_rsa target/easy-reserve-api-0.0.1-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/easy-reserve-api/easy-reserve-api-0.0.1.jar
+          
+          # Salva no histórico de releases para rollback e registra o arquivo VERSION.json
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /app/easy-reserve-api/releases && cp /app/easy-reserve-api/easy-reserve-api-0.0.1.jar /app/easy-reserve-api/releases/easy-reserve-api-\$VERSION_TAG.jar && echo '{\"version\":\"0.1.${{ github.run_number }}\",\"buildNumber\":\"${{ github.run_number }}\",\"commit\":\"${{ github.sha }}\",\"timestamp\":\"${{ github.event.head_commit.timestamp }}\"}' > /app/easy-reserve-api/VERSION.json"
 
       - name: Reiniciar serviço systemd easy-reserve-api
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl restart easy-reserve-api && sleep 4 && systemctl is-active --quiet easy-reserve-api"
+
+      - name: Verificar integridade pós-deploy (Smoke Test)
+        run: |
+          sleep 6
+          HTTP_CODE=$(curl -k -s -o /dev/null -w "%{http_code}" https://easy-reserve-api.72-60-158-216.sslip.io/v3/api-docs)
+          echo "Healthcheck API HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "A API não respondeu HTTP 200 no Smoke Test!"
+            exit 1
+          fi
+
+      - name: Criar Git Tag de Versão no GitHub
+        run: |
+          TAG_NAME="v0.1.${{ github.run_number }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG_NAME" -m "Release $TAG_NAME - Build #${{ github.run_number }}"
+          git push origin "$TAG_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -47,6 +47,8 @@ public class SecurityConfig {
                         // rotas públicas
                         .requestMatchers(
                                 "/api/v1/auth/**",
+                                "/api/v1/version",
+                                "/version",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
