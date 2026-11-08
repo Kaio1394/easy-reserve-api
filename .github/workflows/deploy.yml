@@ -1,0 +1,42 @@
+name: Deploy API to Linux Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Conceder permissão de execução ao Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Compilar e empacotar (.jar)
+        run: ./mvnw clean package -DskipTests
+
+      - name: Configurar Chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Enviar JAR para o Servidor Linux
+        run: |
+          scp -i ~/.ssh/id_rsa target/easy-reserve-api-0.0.1-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/easy-reserve-api/easy-reserve-api-0.0.1.jar
+
+      - name: Reiniciar serviço systemd easy-reserve-api
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl restart easy-reserve-api && sleep 4 && systemctl is-active --quiet easy-reserve-api"
