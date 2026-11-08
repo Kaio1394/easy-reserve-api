@@ -60,15 +60,20 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl restart easy-reserve-api && sleep 4 && systemctl is-active --quiet easy-reserve-api"
 
-      - name: Verificar integridade pós-deploy (Smoke Test)
+      - name: Verificar integridade pós-deploy (Smoke Test com Retry Loop)
         run: |
-          sleep 6
-          HTTP_CODE=$(curl -k -s -o /dev/null -w "%{http_code}" https://easy-reserve-api.72-60-158-216.sslip.io/v3/api-docs)
-          echo "Healthcheck API HTTP status: $HTTP_CODE"
-          if [ "$HTTP_CODE" -ne 200 ]; then
-            echo "A API não respondeu HTTP 200 no Smoke Test!"
-            exit 1
-          fi
+          echo "Aguardando inicialização da API..."
+          for i in {1..15}; do
+            HTTP_CODE=$(curl -k -s -o /dev/null -w "%{http_code}" https://easy-reserve-api.72-60-158-216.sslip.io/api/v1/version || echo "000")
+            echo "Tentativa $i: HTTP $HTTP_CODE"
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              echo "API online e saudável com sucesso!"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "A API não respondeu HTTP 200 no tempo limite!"
+          exit 1
 
       - name: Criar Git Tag de Versão no GitHub
         run: |
