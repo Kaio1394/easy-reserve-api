@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("version")
+@RequestMapping({"api/v1/version", "version"})
 @Tag(name = "Sistema", description = "Endpoints de infraestrutura, versão e integridade")
 public class VersionController {
 

@@ -50,12 +50,11 @@ jobs:
 
       - name: Enviar JAR e Versionar no Servidor Linux
         run: |
-          VERSION_TAG="v0.1.${{ github.run_number }}"
           # Envia o JAR principal
           scp -i ~/.ssh/id_rsa target/easy-reserve-api-0.0.1-SNAPSHOT.jar ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/easy-reserve-api/easy-reserve-api-0.0.1.jar
           
-          # Salva no histórico de releases para rollback e registra o arquivo VERSION.json
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /app/easy-reserve-api/releases && cp /app/easy-reserve-api/easy-reserve-api-0.0.1.jar /app/easy-reserve-api/releases/easy-reserve-api-\$VERSION_TAG.jar && echo '{\"version\":\"0.1.${{ github.run_number }}\",\"buildNumber\":\"${{ github.run_number }}\",\"commit\":\"${{ github.sha }}\",\"timestamp\":\"${{ github.event.head_commit.timestamp }}\"}' > /app/easy-reserve-api/VERSION.json"
+          # Salva no histórico de releases para rollback e registra o arquivo environment e VERSION.json
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p /app/easy-reserve-api/releases && cp /app/easy-reserve-api/easy-reserve-api-0.0.1.jar /app/easy-reserve-api/releases/easy-reserve-api-v0.1.${{ github.run_number }}.jar && printf 'APP_VERSION=0.1.${{ github.run_number }}\nBUILD_NUMBER=${{ github.run_number }}\nGIT_COMMIT=${{ github.sha }}\nBUILD_TIME=${{ github.event.head_commit.timestamp }}\n' > /app/easy-reserve-api/environment && echo '{\"version\":\"0.1.${{ github.run_number }}\",\"buildNumber\":\"${{ github.run_number }}\",\"commit\":\"${{ github.sha }}\",\"timestamp\":\"${{ github.event.head_commit.timestamp }}\"}' > /app/easy-reserve-api/VERSION.json"
 
       - name: Reiniciar serviço systemd easy-reserve-api
         run: |
